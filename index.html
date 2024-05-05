@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turing</title>
+    <link rel="stylesheet" href="bacis.css">
+</head>
+<body>
+    <button id="showInput" style="display: none;">Edit table</button>
+    <div id="tape" style="display: none;">
+        <span id="0" class="square active">
+            <span class="symbol"></span>
+            <div id="head">b</div>
+        </span>
+    </div>
+    <div id="input">
+        <label for="tapeInput">Tape:</label>
+        <input id="tapeInput" name="tapeInput">
+        <table id="table" contenteditable="true">
+            <thead>
+                <th>Current State</th>
+                <th>Symbol</th>
+                <th>Actions (Comma separated)</th>
+                <th>Next State</th>
+            </thead>
+        </table>
+        <button id="addRow">Add row</button>
+        <button class="set" data-opt="1">Default 1 (Gen 0010110111..)</button>
+        <button class="set" data-opt="2">Default 2 (Recoginze 0^n1^n)</button>
+        <button class="set" data-opt="0">Set</button>
+        <button id="close">Close</button>
+    </div>
+    <script defer src="turing.js"></script>
+    <script defer src="inputs.js"></script>
+</body>
+</html>
