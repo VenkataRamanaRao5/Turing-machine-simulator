@@ -4,23 +4,25 @@ document.getElementById("addRow").addEventListener('click', e => {
     table.innerHTML += '<tr><td></td><td></td><td></td><td></td></tr>'
 })
 
-function setTape(str){
+function setTape(str) {
     console.log(str)
+    container.innerHTML = ''
     tape.innerHTML = `
-    <span id="0" class="square active">
-        <span class="symbol">${str ? str[0] : ''}</span>
-        <div id="head">${state}</div>
-    </span>`
-    for(let i = 1; i < str.length; i++){
+<span id="0" class="square active">
+<span class="symbol">${str ? str[0] : ''}</span>
+<div id="head">${state}</div>
+</span>`
+    for (let i = 1; i < str.length; i++) {
         tape.innerHTML += `
-        <span id="${i}" class="square">
-            <span class="symbol">${str[i]}</span>
-        </span>`
+<span id="${i}" class="square">
+    <span class="symbol">${str[i]}</span>
+</span>`
     }
+    container.appendChild(tape)
 }
 
-function setTable(map){
-    while(table.rows.length > 1)
+function setTable(map) {
+    while (table.rows.length > 1)
         table.deleteRow(1)
     let s, i, counter = 1, row
     map.forEach((value, key) => {
@@ -36,16 +38,16 @@ function setTable(map){
 }
 
 let sets = document.getElementsByClassName("set")
-for(let i = 0; i < sets.length; i++){
+for (let i = 0; i < sets.length; i++) {
     sets[i].addEventListener('click', e => {
         e.preventDefault()
         e.stopImmediatePropagation()
         index = 0
-        opt=e.target.getAttribute('data-opt')
-        switch(opt){
+        opt = e.target.getAttribute('data-opt')
+        switch (opt) {
             case '0':
                 state = table.rows.item(1).cells[0].textContent
-                for(let i = 1; i < table.rows.length; i++){
+                for (let i = 1; i < table.rows.length; i++) {
                     let row = table.rows.item(i).cells
                     transitionTable.set(JSON.stringify([row[0].textContent, row[1].textContent]), [row[3].textContent, row[2].textContent.split(/, ?/).filter(e => e)])
                 }
@@ -75,7 +77,7 @@ for(let i = 0; i < sets.length; i++){
                 setTape(tapeInput.value)
                 transitionTable = new Map([
                     [JSON.stringify(['b', '0']), ['c', ['X', 'R']]],
-                    [JSON.stringify(['b', 'Y']), ['e', ['Y','R']]],
+                    [JSON.stringify(['b', 'Y']), ['e', ['Y', 'R']]],
                     [JSON.stringify(['c', '0']), ['c', ['0', 'R']]],
                     [JSON.stringify(['c', '1']), ['d', ['Y', 'L']]],
                     [JSON.stringify(['c', 'Y']), ['c', ['Y', 'R']]],
@@ -83,39 +85,34 @@ for(let i = 0; i < sets.length; i++){
                     [JSON.stringify(['d', 'X']), ['b', ['X', 'R']]],
                     [JSON.stringify(['d', 'Y']), ['d', ['Y', 'L']]],
                     [JSON.stringify(['e', 'Y']), ['e', ['Y', 'R']]],
-                    [JSON.stringify(['e', '']), ['f', []]]
+                    [JSON.stringify(['e', '']), ['f', ['', 'R']]]
                 ])
                 setTable(transitionTable)
                 break
-        } 
-        tape.style.display = "grid"
+        }
+        container.style.display = "grid"
         input.style.display = "none"
         edit.style.display = "block"
-        if(tr)
-            auto = setTimeout(iter, delay)
-        else
-            setTimeout(transition, delay)
+        tran = setTimeout(transition, delay)
     })
 }
 
 document.getElementById("close").addEventListener('click', (e) => {
     e.preventDefault()
     e.stopImmediatePropagation()
-    tape.style.display = "grid"
+    container.style.display = "block"
     input.style.display = "none"
     edit.style.display = "block"
-    if(tr)
-        auto = setTimeout(iter, delay)
-    else
-        setTimeout(transition, delay)
+    tran = setTimeout(transition, delay)
 })
 
 document.getElementById("showInput").addEventListener('click', (e) => {
     clearTimeout(auto)
+    clearTimeout(tran)
     console.log("here")
     e.preventDefault()
     e.stopImmediatePropagation()
-    tape.style.display = "none"
+    container.style.display = "none"
     input.style.display = "block"
     edit.style.display = "none"
 })
