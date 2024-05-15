@@ -1,13 +1,15 @@
 let state
 let index = 0
-let delay = 500
+let delay = 400
 let auto
+let tran
 let iiter = 0
 let tr
 let transitionTable = new Map()
 
-const tape = document.getElementById('tape')
-const head = document.getElementById('head')
+let tape = document.getElementById('tape')
+let head = document.getElementById('head')
+const container = document.getElementById('container')
 const input = document.getElementById('input')
 const edit = document.getElementById('showInput')
 const table = document.getElementById('table')
@@ -42,7 +44,7 @@ function updateHead(from, to, text) {
     head.innerText = text
     let t = document.getElementById(to)
     if (!t) {
-        if(to > 0)
+        if (to > 0)
             tape.innerHTML += `<span id=${to} class=square><span class=symbol></span></span>`
         else
             tape.innerHTML = `<span id=${to} class=square><span class=symbol></span></span>` + tape.innerHTML
@@ -53,8 +55,22 @@ function updateHead(from, to, text) {
 }
 
 function writeSymbol(symbol) {
-    square = document.getElementById(index)
-    square.firstElementChild.innerText = symbol
+    if (square.firstElementChild.innerText != symbol) {
+
+        let cont = tape.outerHTML
+        square = document.getElementById(index)
+        square.classList.remove('active')
+        for (let i of tape.children)
+            i.id = ''
+        head.remove()
+        tape.id = ''
+        tape.classList.remove('current')
+        container.innerHTML += cont
+        tape = document.getElementById('tape')
+        head = document.getElementById('head')
+        square = document.getElementById(index)
+        square.firstElementChild.innerText = symbol
+    }
 }
 
 function transition() {
@@ -65,13 +81,13 @@ function transition() {
         if (tr[1].length == 0) {
             state = tr[0]
             updateHead(index, index, state)
-            setTimeout(transition, delay)
+            tran = setTimeout(transition, delay)
         }
         else {
             auto = setTimeout(iter, delay)
         }
     }
-    else{
+    else {
         window.alert("Transition End!")
     }
 }
@@ -96,7 +112,7 @@ function iter() {
             writeSymbol(tr[1][iiter])
     }
     if (iiter == tr[1].length - 1)
-        setTimeout(transition, delay)
+        tran = setTimeout(transition, delay)
     else {
         iiter++
         auto = setTimeout(iter, delay)
@@ -104,7 +120,8 @@ function iter() {
 }
 
 function pausePlay(e) {
-    if (tape.style.display != "none") {
+    console.log(e.target)
+    if (container.style.display != "none") {
         if (auto) {
             clearTimeout(auto)
             auto = null
