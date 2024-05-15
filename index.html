@@ -8,11 +8,13 @@
 </head>
 <body>
     <button id="showInput" style="display: none;">Edit table</button>
-    <div id="tape" style="display: none;">
-        <span id="0" class="square active">
-            <span class="symbol"></span>
-            <div id="head">b</div>
-        </span>
+    <div id="container" style="display: none;">
+        <div id="tape" style="display: grid;" class="tape current">
+            <span id="0" class="square active">
+                <span class="symbol"></span>
+                <div id="head">b</div>
+            </span>
+        </div>
     </div>
     <div id="input">
         <label for="tapeInput">Tape:</label>
