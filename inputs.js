@@ -54,21 +54,28 @@ for (let i = 0; i < sets.length; i++) {
                 setTape(tapeInput.value)
                 break
             case '1':
-                state = 'b'
-                setTape('')
+                state = 'q0'
+                setTape(tapeInput.value)
                 transitionTable = new Map([
-                    [JSON.stringify(['b', '']), ['o', ['e', 'R', 'e', 'R', '0', 'R', 'R', '0', 'L', 'L']]],
-                    [JSON.stringify(['o', '1']), ['o', ['R', 'x', 'L', 'L', 'L']]],
-                    [JSON.stringify(['o', '0']), ['q', []]],
-                    [JSON.stringify(['q', '0']), ['q', ['R', 'R']]],
-                    [JSON.stringify(['q', '1']), ['q', ['R', 'R']]],
-                    [JSON.stringify(['q', '']), ['p', ['1', 'L']]],
-                    [JSON.stringify(['p', 'x']), ['q', ['E', 'R']]],
-                    [JSON.stringify(['p', 'e']), ['f', ['R']]],
-                    [JSON.stringify(['p', '']), ['p', ['L', 'L']]],
-                    [JSON.stringify(['f', '1']), ['f', ['R', 'R']]],
-                    [JSON.stringify(['f', '0']), ['f', ['R', 'R']]],
-                    [JSON.stringify(['f', '']), ['o', ['0', 'L', 'L']]],
+                    [JSON.stringify(['q0', '0']), ['q6', ['E', 'R']]],
+                    [JSON.stringify(['q6', '0']), ['q6', ['0', 'R']]],
+                    [JSON.stringify(['q6', '1']), ['q1', ['1', 'R']]],
+                    [JSON.stringify(['q5', '0']), ['q5', ['0', 'L']]],
+                    [JSON.stringify(['q5', '1']), ['q5', ['1', 'L']]],
+                    [JSON.stringify(['q5', '']), ['q0', ['E', 'R']]],
+                    [JSON.stringify(['q0', '1']), ['q7', ['E', 'R']]],
+                    [JSON.stringify(['q7', '0']), ['q7', ['E', 'R']]],
+                    [JSON.stringify(['q7', '1']), ['q8', ['E', 'R']]],
+                    [JSON.stringify(['q1', '0']), ['q2', ['X', 'R']]],
+                    [JSON.stringify(['q2', '0']), ['q2', ['0', 'R']]],
+                    [JSON.stringify(['q2', '1']), ['q2', ['1', 'R']]],
+                    [JSON.stringify(['q2', '']), ['q3', ['0', 'L']]],
+                    [JSON.stringify(['q3', '1']), ['q3', ['1', 'L']]],
+                    [JSON.stringify(['q3', 'X']), ['q1', ['X', 'R']]],
+                    [JSON.stringify(['q1', '1']), ['q4', ['1', 'L']]],
+                    [JSON.stringify(['q4', 'X']), ['q4', ['0', 'L']]],
+                    [JSON.stringify(['q4', '1']), ['q5', ['1', 'R']]],
+                    [JSON.stringify(['q3', '0']), ['q3', ['0', 'L']]]
                 ])
                 setTable(transitionTable)
                 break
