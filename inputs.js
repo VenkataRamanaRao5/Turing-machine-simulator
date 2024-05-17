@@ -45,6 +45,7 @@ for(let i = 0; i < sets.length; i++){
         switch(opt){
             case '0':
                 state = table.rows.item(1).cells[0].textContent
+                transitionTable = new Map()
                 for(let i = 1; i < table.rows.length; i++){
                     let row = table.rows.item(i).cells
                     transitionTable.set(JSON.stringify([row[0].textContent, row[1].textContent]), [row[3].textContent, row[2].textContent.split(/, ?/).filter(e => e)])
@@ -118,4 +119,13 @@ document.getElementById("showInput").addEventListener('click', (e) => {
     tape.style.display = "none"
     input.style.display = "block"
     edit.style.display = "none"
+})
+
+document.getElementById('encode').addEventListener('click', (e) => {
+    window.alert(JSON.stringify(Array.from(transitionTable.entries())))
+})
+
+document.getElementById('load').addEventListener('click', (e) => {
+    transitionTable = new Map(JSON.parse(window.prompt('Enter map JSON')))
+    setTable(transitionTable)
 })
