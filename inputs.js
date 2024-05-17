@@ -19,6 +19,7 @@ function setTape(str) {
 </span>`
     }
     container.appendChild(tape)
+    head = document.getElementById('head')
 }
 
 function setTable(map) {
@@ -123,4 +124,13 @@ document.getElementById("showInput").addEventListener('click', (e) => {
     container.style.display = "none"
     input.style.display = "block"
     edit.style.display = "none"
+})
+
+document.getElementById('encode').addEventListener('click', (e) => {
+    window.alert(JSON.stringify(Array.from(transitionTable.entries())))
+})
+
+document.getElementById('load').addEventListener('click', (e) => {
+    transitionTable = new Map(JSON.parse(window.prompt('Enter map JSON')))
+    setTable(transitionTable)
 })
