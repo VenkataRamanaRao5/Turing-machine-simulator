@@ -5,6 +5,7 @@ let auto
 let tran
 let iiter = 0
 let tr
+let dupOnStateChange = false
 let transitionTable = new Map()
 
 let tape = document.getElementById('tape')
@@ -36,6 +37,21 @@ const tapeInput = document.getElementById('tapeInput')
     [JSON.stringify(['b', '1']), ['b', ['R', 'R', '0']]]
 ])*/
 
+function duplicateTape(){
+    console.log("Here")
+    let cont = tape.outerHTML
+    square = document.getElementById(index)
+    square.classList.remove('active')
+    for (let i of tape.children)
+        i.removeAttribute('id')
+    head.removeAttribute('id')
+    tape.removeAttribute('id')
+    tape.classList.remove('current')
+    outer.innerHTML += cont
+    tape = document.getElementById('tape')
+    head = document.getElementById('head')
+    tape.scrollIntoView()
+}
 
 function updateHead(from, to, text) {
     let f = document.getElementById(from)
@@ -55,22 +71,8 @@ function updateHead(from, to, text) {
 }
 
 function writeSymbol(symbol) {
-    if (square.firstElementChild.innerText != symbol) {
-
-        let cont = tape.outerHTML
-        square = document.getElementById(index)
-        square.classList.remove('active')
-        for (let i of tape.children)
-            i.id = ''
-        head.id = ''
-        tape.id = ''
-        tape.classList.remove('current')
-        container.innerHTML += cont
-        tape = document.getElementById('tape')
-        head = document.getElementById('head')
-        square = document.getElementById(index)
-        square.firstElementChild.innerText = symbol
-    }
+    square = document.getElementById(index)
+    square.firstElementChild.innerText = symbol
 }
 
 function transition() {
@@ -94,6 +96,8 @@ function transition() {
 
 function iter() {
     if (iiter == tr[1].length - 1) {
+        if(dupOnStateChange && state != tr[0])
+            duplicateTape()
         state = tr[0]
     }
     switch (tr[1][iiter]) {
@@ -105,10 +109,14 @@ function iter() {
             index++
             updateHead(index - 1, index, state)
             break
-        case 'E':
+        case 'E': case 'B':
+            if(document.getElementById(index).firstElementChild.innerText != '')
+                duplicateTape()
             writeSymbol('')
             break
         default:
+            if(document.getElementById(index).firstElementChild.innerText != tr[1][iiter])
+                duplicateTape()
             writeSymbol(tr[1][iiter])
     }
     if (iiter == tr[1].length - 1)
