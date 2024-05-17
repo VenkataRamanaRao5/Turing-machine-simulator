@@ -46,6 +46,7 @@ for (let i = 0; i < sets.length; i++) {
         opt = e.target.getAttribute('data-opt')
         switch (opt) {
             case '0':
+                transitionTable = new Map()
                 state = table.rows.item(1).cells[0].textContent
                 for (let i = 1; i < table.rows.length; i++) {
                     let row = table.rows.item(i).cells
