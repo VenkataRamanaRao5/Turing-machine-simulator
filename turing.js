@@ -62,7 +62,7 @@ function writeSymbol(symbol) {
         square.classList.remove('active')
         for (let i of tape.children)
             i.id = ''
-        head.remove()
+        head.id = ''
         tape.id = ''
         tape.classList.remove('current')
         container.innerHTML += cont
