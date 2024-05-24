@@ -141,3 +141,15 @@ function pausePlay(e) {
 }
 window.addEventListener('click', pausePlay)
 window.addEventListener('keypress', pausePlay)
+
+window.addEventListener('beforeunload', (e) => {
+    e.preventDefault()
+    sessionStorage.setItem('TMtransition', JSON.stringify(Array.from(transitionTable.entries())))
+})
+
+window.addEventListener('load', (e) => {
+    if (sessionStorage.getItem('TMtransition')) {
+        transitionTable = new Map(JSON.parse(sessionStorage.getItem('TMtransition')))
+        setTable(transitionTable)
+    }
+})
