@@ -1,3 +1,4 @@
+
 let state
 let index = 0
 let delay = 400
@@ -10,7 +11,7 @@ let transitionTable = new Map()
 
 let tape = document.getElementById('tape')
 let head = document.getElementById('head')
-const container = document.getElementById('container')
+const outer = document.getElementById('container')
 const input = document.getElementById('input')
 const edit = document.getElementById('showInput')
 const table = document.getElementById('table')
@@ -129,7 +130,7 @@ function iter() {
 
 function pausePlay(e) {
     console.log(e.target)
-    if (container.style.display != "none") {
+    if (outer.style.display != "none") {
         if (auto) {
             clearTimeout(auto)
             auto = null
