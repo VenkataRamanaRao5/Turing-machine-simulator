@@ -42,7 +42,7 @@ function updateHead(from, to, text) {
     head.innerText = text
     let t = document.getElementById(to)
     if (!t) {
-        if(to > 0)
+        if (to > 0)
             tape.innerHTML += `<span id=${to} class=square><span class=symbol></span></span>`
         else
             tape.innerHTML = `<span id=${to} class=square><span class=symbol></span></span>` + tape.innerHTML
@@ -71,7 +71,7 @@ function transition() {
             auto = setTimeout(iter, delay)
         }
     }
-    else{
+    else {
         window.alert("Transition End!")
     }
 }
@@ -115,3 +115,15 @@ function pausePlay(e) {
 }
 window.addEventListener('click', pausePlay)
 window.addEventListener('keypress', pausePlay)
+
+window.addEventListener('beforeunload', (e) => {
+    e.preventDefault()
+    sessionStorage.setItem('TMtransition', JSON.stringify(Array.from(transitionTable.entries())))
+})
+
+window.addEventListener('load', (e) => {
+    if (sessionStorage.getItem('TMtransition')) {
+        transitionTable = new Map(JSON.parse(sessionStorage.getItem('TMtransition')))
+        setTable(transitionTable)
+    }
+})
