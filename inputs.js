@@ -59,6 +59,8 @@ for (let i = 0; i < sets.length; i++) {
                 transitionTable = new Map()
                 state = table.rows.item(1).cells[0].textContent
                 for (let i = 1; i < table.rows.length; i++) {
+                transitionTable = new Map()
+                for(let i = 1; i < table.rows.length; i++){
                     let row = table.rows.item(i).cells
                     abbreviatedTable.set(JSON.stringify([row[0].textContent, row[1].textContent]), [row[3].textContent, row[2].textContent.split(/, ?/).filter(e => e)])
                 }

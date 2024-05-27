@@ -146,8 +146,10 @@ function pausePlay(e) {
             auto = setTimeout(iter, delay)
     }
 }
+
 document.body.addEventListener('click', pausePlay)
 document.body.addEventListener('keypress', pausePlay)
+
 
 window.addEventListener('beforeunload', (e) => {
     e.preventDefault()
