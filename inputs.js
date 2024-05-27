@@ -20,8 +20,8 @@ function setTape(str) {
     <span class="symbol">${str ? str[0] : ''}</span>
         <div id="head">${state}</div>
         </span>`
-        for (let i = 1; i < str.length; i++) {
-            tape.innerHTML += `
+    for (let i = 1; i < str.length; i++) {
+        tape.innerHTML += `
         <span id="${i}" class="square">
         <span class="symbol">${(str[i] == 'B' || str[i] == ' ') ? '' : str[i]}</span>
         </span>`
@@ -59,50 +59,48 @@ for (let i = 0; i < sets.length; i++) {
                 transitionTable = new Map()
                 state = table.rows.item(1).cells[0].textContent
                 for (let i = 1; i < table.rows.length; i++) {
-                transitionTable = new Map()
-                for(let i = 1; i < table.rows.length; i++){
                     let row = table.rows.item(i).cells
                     abbreviatedTable.set(JSON.stringify([row[0].textContent, row[1].textContent]), [row[3].textContent, row[2].textContent.split(/, ?/).filter(e => e)])
                 }
-                if(vars.rows.length > 1){
+                if (vars.rows.length > 1) {
                     for (let i = 1; i < vars.rows.length; i++) {
                         let row = vars.rows.item(i).cells
                         symbolTable.set(row[0].textContent, row[1].textContent.split(/, ?/).filter(e => e).map(a => (a == 'B' || a == ' ') ? '' : a))
                     }
-                    for(let i of abbreviatedTable.keys()){
+                    for (let i of abbreviatedTable.keys()) {
                         let inp = JSON.parse(i),
-                        nxt = abbreviatedTable.get(i)[0],
-                        actions = abbreviatedTable.get(i)[1]
-                        if(symbolTable.has(inp[1])){
-                            for(let j of symbolTable.get(inp[1]))
+                            nxt = abbreviatedTable.get(i)[0],
+                            actions = abbreviatedTable.get(i)[1]
+                        if (symbolTable.has(inp[1])) {
+                            for (let j of symbolTable.get(inp[1]))
                                 transitionTable.set(JSON.stringify([inp[0], j]), [nxt, actions.map(a => (a == inp[1]) ? j : a)])
                         }
-                        else{
+                        else {
                             transitionTable.set(i, abbreviatedTable.get(i))
                         }
                     }
                 }
-                else{
+                else {
                     transitionTable = abbreviatedTable
                 }
                 setTape(tapeInput.value)
                 break
             case '1':
-                state = 'q0'
-                setTape(tapeInput.value)
+                state = 'b'
+                setTape('')
                 transitionTable = new Map([
-                    [JSON.stringify(['b', '']), ['o', 'e, R, e, R, 0, R, R, 0, L, L']],
-                    [JSON.stringify(['o', '1']), ['o', 'R, x, L, L, L']],
-                    [JSON.stringify(['o', '0']), ['q', '']],
-                    [JSON.stringify(['q', '0']), ['q', 'R, R']],
-                    [JSON.stringify(['q', '1']), ['q', 'R, R']],
-                    [JSON.stringify(['q', '']), ['p', '1, L']],
-                    [JSON.stringify(['p', 'x']), ['q', 'E, R']],
-                    [JSON.stringify(['p', 'e']), ['f', 'R']],
-                    [JSON.stringify(['p', '']), ['p', 'L, L']],
-                    [JSON.stringify(['f', '1']), ['f', 'R, R']],
-                    [JSON.stringify(['f', '0']), ['f', 'R, R']],
-                    [JSON.stringify(['f', '']), ['o', '0, L, L']],
+                    [JSON.stringify(['b', '']), ['o', ['e', 'R', 'e', 'R', '0', 'R', 'R', '0', 'L', 'L']]],
+                    [JSON.stringify(['o', '1']), ['o', ['R', 'x', 'L', 'L', 'L']]],
+                    [JSON.stringify(['o', '0']), ['q', []]],
+                    [JSON.stringify(['q', '0']), ['q', ['R', 'R']]],
+                    [JSON.stringify(['q', '1']), ['q', ['R', 'R']]],
+                    [JSON.stringify(['q', '']), ['p', ['1', 'L']]],
+                    [JSON.stringify(['p', 'x']), ['q', ['E', 'R']]],
+                    [JSON.stringify(['p', 'e']), ['f', ['R']]],
+                    [JSON.stringify(['p', '']), ['p', ['L', 'L']]],
+                    [JSON.stringify(['f', '1']), ['f', ['R', 'R']]],
+                    [JSON.stringify(['f', '0']), ['f', ['R', 'R']]],
+                    [JSON.stringify(['f', '']), ['o', ['0', 'L', 'L']]]
                 ])
                 setTable(transitionTable)
                 break
@@ -123,8 +121,8 @@ for (let i = 0; i < sets.length; i++) {
                 ])
                 setTable(transitionTable)
                 break
-            }
-            outer.style.display = "grid"
+        }
+        outer.style.display = "grid"
         input.style.display = "none"
         edit.style.display = "block"
         tran = setTimeout(transition, delay)
