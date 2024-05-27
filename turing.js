@@ -1,39 +1,64 @@
+
 let state
 let index = 0
-let delay = 500
+let delay = 400
 let auto
+let tran
 let iiter = 0
 let tr
+let dupOnStateChange = false
+let dupOnTapeChange = false
 let transitionTable = new Map()
+let abbreviatedTable = new Map()
+let symbolTable = new Map()
 
-const tape = document.getElementById('tape')
-const head = document.getElementById('head')
+let tape = document.getElementById('tape')
+let head = document.getElementById('head')
+const outer = document.getElementById('container')
 const input = document.getElementById('input')
 const edit = document.getElementById('showInput')
 const table = document.getElementById('table')
+const vars = document.getElementById('vars')
 const tapeInput = document.getElementById('tapeInput')
 
 /*const transitionTable = new Map([
-    [JSON.stringify(['b', '']), ['o', 'e, R, e, R, 0, R, R, 0, L, L']],
-    [JSON.stringify(['o', '1']), ['o', 'R, x, L, L, L']],
-    [JSON.stringify(['o', '0']), ['q', '']],
-    [JSON.stringify(['q', '0']), ['q', 'R, R']],
-    [JSON.stringify(['q', '1']), ['q', 'R, R']],
-    [JSON.stringify(['q', '']), ['p', '1, L']],
-    [JSON.stringify(['p', 'x']), ['q', 'E, R']],
-    [JSON.stringify(['p', 'e']), ['f', 'R']],
-    [JSON.stringify(['p', '']), ['p', 'L, L']],
-    [JSON.stringify(['f', '1']), ['f', 'R, R']],
-    [JSON.stringify(['f', '0']), ['f', 'R, R']],
-    [JSON.stringify(['f', '']), ['o', '0, L, L']],
-])*/
+    [JSON.stringify(['q0', '0']), ['q6', ['E', 'R']]],
+    [JSON.stringify(['q6', '0']), ['q6', ['0', 'R']]],
+    [JSON.stringify(['q6', '1']), ['q1', ['1', 'R']]],
+    [JSON.stringify(['q5', '0']), ['q5', ['0', 'L']]],
+    [JSON.stringify(['q5', '1']), ['q5', ['1', 'L']]],
+    [JSON.stringify(['q5', '']), ['q0', ['E', 'R']]],
+    [JSON.stringify(['q0', '1']), ['q7', ['E', 'R']]],
+    [JSON.stringify(['q7', '0']), ['q7', ['E', 'R']]],
+    [JSON.stringify(['q7', '1']), ['q8', ['E', 'R']]],
+    [JSON.stringify(['q1', '0']), ['q2', ['X', 'R']]],
+    [JSON.stringify(['q2', '0']), ['q2', ['0', 'R']]],
+    [JSON.stringify(['q2', '1']), ['q2', ['1', 'R']]],
+    [JSON.stringify(['q2', '']), ['q3', ['0', 'L']]],
+    [JSON.stringify(['q3', '1']), ['q3', ['1', 'L']]],
+    [JSON.stringify(['q3', 'X']), ['q1', ['X', 'R']]],
+    [JSON.stringify(['q1', '1']), ['q4', ['1', 'L']]],
+    [JSON.stringify(['q4', 'X']), ['q4', ['0', 'L']]],
+    [JSON.stringify(['q4', '1']), ['q5', ['1', 'R']]],
+    [JSON.stringify(['q3', '0']), ['q3', ['0', 'L']]]
+])
+*/
 
-/*const transitionTable = new Map([
-    [JSON.stringify(['b', '']), ['b', ['0']]],
-    [JSON.stringify(['b', '0']), ['b', ['R', 'R', '1']]],
-    [JSON.stringify(['b', '1']), ['b', ['R', 'R', '0']]]
-])*/
-
+function duplicateTape() {
+    console.log("Here")
+    let cont = tape.outerHTML
+    square = document.getElementById(index)
+    square.classList.remove('active')
+    for (let i of tape.children)
+        i.removeAttribute('id')
+    head.removeAttribute('id')
+    tape.removeAttribute('id')
+    tape.classList.remove('current')
+    outer.innerHTML += cont
+    tape = document.getElementById('tape')
+    head = document.getElementById('head')
+    tape.scrollIntoView()
+}
 
 function updateHead(from, to, text) {
     let f = document.getElementById(from)
@@ -65,7 +90,7 @@ function transition() {
         if (tr[1].length == 0) {
             state = tr[0]
             updateHead(index, index, state)
-            setTimeout(transition, delay)
+            tran = setTimeout(transition, delay)
         }
         else {
             auto = setTimeout(iter, delay)
@@ -78,6 +103,8 @@ function transition() {
 
 function iter() {
     if (iiter == tr[1].length - 1) {
+        if (dupOnStateChange && state != tr[0])
+            duplicateTape()
         state = tr[0]
     }
     switch (tr[1][iiter]) {
@@ -89,14 +116,18 @@ function iter() {
             index++
             updateHead(index - 1, index, state)
             break
-        case 'E':
+        case 'E': case 'B':
+            if (dupOnTapeChange && document.getElementById(index).firstElementChild.innerText != '')
+                duplicateTape()
             writeSymbol('')
             break
         default:
+            if (dupOnTapeChange && document.getElementById(index).firstElementChild.innerText != tr[1][iiter])
+                duplicateTape()
             writeSymbol(tr[1][iiter])
     }
     if (iiter == tr[1].length - 1)
-        setTimeout(transition, delay)
+        tran = setTimeout(transition, delay)
     else {
         iiter++
         auto = setTimeout(iter, delay)
@@ -104,7 +135,9 @@ function iter() {
 }
 
 function pausePlay(e) {
-    if (tape.style.display != "none") {
+    console.log(e.target)
+
+    if (Array(document.body, outer, tape).includes(e.target) && outer.style.display != "none") {
         if (auto) {
             clearTimeout(auto)
             auto = null
@@ -113,8 +146,10 @@ function pausePlay(e) {
             auto = setTimeout(iter, delay)
     }
 }
-window.addEventListener('click', pausePlay)
-window.addEventListener('keypress', pausePlay)
+
+document.body.addEventListener('click', pausePlay)
+document.body.addEventListener('keypress', pausePlay)
+
 
 window.addEventListener('beforeunload', (e) => {
     e.preventDefault()

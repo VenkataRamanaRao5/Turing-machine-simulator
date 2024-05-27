@@ -8,11 +8,24 @@
 </head>
 <body>
     <button id="showInput" style="display: none;">Edit table</button>
-    <div id="tape" style="display: none;">
-        <span id="0" class="square active">
-            <span class="symbol"></span>
-            <div id="head">b</div>
-        </span>
+    <div id="delay">
+        <label>Delay:</label>
+        <input type="number" min="10" max="1000" value="500" onchange="delay=this.value">
+    </div>
+    <div id="hist">
+        History:
+        <input type="checkbox" onchange="dupOnStateChange = this.checked">
+        <label>Duplicate tape on state change</label>
+        <input type="checkbox" onchange="dupOnTapeChange = this.checked">
+        <label>Duplicate tape on tape change</label>
+    </div>
+    <div id="container" style="display: none;">
+        <div id="tape" style="display: grid;" class="tape current">
+            <span id="0" class="square active">
+                <span class="symbol"></span>
+                <div id="head">b</div>
+            </span>
+        </div>
     </div>
     <div id="input">
         <label for="tapeInput">Tape:</label>
@@ -32,7 +45,16 @@
         <button id="close">Close</button>
         <button id="encode">Encode Table as JSON</button>
         <button id="load">Load Table from JSON</button>
+        <table id="vars" contenteditable="true">
+            <thead>
+                <th>Variable</th>
+                <th>Possible input symbols</th>
+            </thead>
+        </table>
+        <button id="addVar">Add variable</button>
+        <button id="expand">Substitute variables in table</button>
     </div>
+    
     <script defer src="turing.js"></script>
     <script defer src="inputs.js"></script>
 </body>

@@ -7,6 +7,8 @@ The state given in the first row becomes the start state.
 
 Press space or click the screen to pause/play.
 
+A new tape is created for every modification to the tape to preserve the history of changes
+
 The action is given in the following format:
 * Comma separated
 * L for left, R for right (case-sensitive)
