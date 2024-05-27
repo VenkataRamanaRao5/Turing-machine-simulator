@@ -5,19 +5,26 @@ document.getElementById("addRow").addEventListener('click', e => {
     table.innerHTML += '<tr><td></td><td></td><td></td><td></td></tr>'
 })
 
+document.getElementById("addVar").addEventListener('click', e => {
+    e.preventDefault()
+    e.stopImmediatePropagation()
+    vars.innerHTML += '<tr><td></td><td></td></tr>'
+})
+
+
 function setTape(str) {
     console.log(str)
     outer.innerHTML = ''
     tape.innerHTML = `
-<span id="0" class="square active">
-<span class="symbol">${str ? str[0] : ''}</span>
-<div id="head">${state}</div>
-</span>`
-    for (let i = 1; i < str.length; i++) {
-        tape.innerHTML += `
-<span id="${i}" class="square">
-    <span class="symbol">${str[i]}</span>
-</span>`
+    <span id="0" class="square active">
+    <span class="symbol">${str ? str[0] : ''}</span>
+        <div id="head">${state}</div>
+        </span>`
+        for (let i = 1; i < str.length; i++) {
+            tape.innerHTML += `
+        <span id="${i}" class="square">
+        <span class="symbol">${(str[i] == 'B' || str[i] == ' ') ? '' : str[i]}</span>
+        </span>`
     }
     outer.appendChild(tape)
     head = document.getElementById('head')
@@ -48,38 +55,53 @@ for (let i = 0; i < sets.length; i++) {
         opt = e.target.getAttribute('data-opt')
         switch (opt) {
             case '0':
+                abbreviatedTable = new Map()
                 transitionTable = new Map()
                 state = table.rows.item(1).cells[0].textContent
                 for (let i = 1; i < table.rows.length; i++) {
                     let row = table.rows.item(i).cells
-                    transitionTable.set(JSON.stringify([row[0].textContent, row[1].textContent]), [row[3].textContent, row[2].textContent.split(/, ?/).filter(e => e)])
+                    abbreviatedTable.set(JSON.stringify([row[0].textContent, row[1].textContent]), [row[3].textContent, row[2].textContent.split(/, ?/).filter(e => e)])
+                }
+                if(vars.rows.length > 1){
+                    for (let i = 1; i < vars.rows.length; i++) {
+                        let row = vars.rows.item(i).cells
+                        symbolTable.set(row[0].textContent, row[1].textContent.split(/, ?/).filter(e => e).map(a => (a == 'B' || a == ' ') ? '' : a))
+                    }
+                    for(let i of abbreviatedTable.keys()){
+                        let inp = JSON.parse(i),
+                        nxt = abbreviatedTable.get(i)[0],
+                        actions = abbreviatedTable.get(i)[1]
+                        if(symbolTable.has(inp[1])){
+                            for(let j of symbolTable.get(inp[1]))
+                                transitionTable.set(JSON.stringify([inp[0], j]), [nxt, actions.map(a => (a == inp[1]) ? j : a)])
+                        }
+                        else{
+                            transitionTable.set(i, abbreviatedTable.get(i))
+                        }
+                    }
+                }
+                else{
+                    transitionTable = abbreviatedTable
                 }
                 setTape(tapeInput.value)
                 break
-                case '1':
-                    state = 'q0'
-                    setTape(tapeInput.value)
-                    transitionTable = new Map([
-                        [JSON.stringify(['q0', '0']), ['q6', ['E', 'R']]],
-                        [JSON.stringify(['q6', '0']), ['q6', ['0', 'R']]],
-                        [JSON.stringify(['q6', '1']), ['q1', ['1', 'R']]],
-                        [JSON.stringify(['q5', '0']), ['q5', ['0', 'L']]],
-                        [JSON.stringify(['q5', '1']), ['q5', ['1', 'L']]],
-                        [JSON.stringify(['q5', '']), ['q0', ['E', 'R']]],
-                        [JSON.stringify(['q0', '1']), ['q7', ['E', 'R']]],
-                        [JSON.stringify(['q7', '0']), ['q7', ['E', 'R']]],
-                        [JSON.stringify(['q7', '1']), ['q8', ['E', 'R']]],
-                        [JSON.stringify(['q1', '0']), ['q2', ['X', 'R']]],
-                        [JSON.stringify(['q2', '0']), ['q2', ['0', 'R']]],
-                        [JSON.stringify(['q2', '1']), ['q2', ['1', 'R']]],
-                        [JSON.stringify(['q2', '']), ['q3', ['0', 'L']]],
-                        [JSON.stringify(['q3', '1']), ['q3', ['1', 'L']]],
-                        [JSON.stringify(['q3', 'X']), ['q1', ['X', 'R']]],
-                        [JSON.stringify(['q1', '1']), ['q4', ['1', 'L']]],
-                        [JSON.stringify(['q4', 'X']), ['q4', ['0', 'L']]],
-                        [JSON.stringify(['q4', '1']), ['q5', ['1', 'R']]],
-                        [JSON.stringify(['q3', '0']), ['q3', ['0', 'L']]]
-                    ])
+            case '1':
+                state = 'q0'
+                setTape(tapeInput.value)
+                transitionTable = new Map([
+                    [JSON.stringify(['b', '']), ['o', 'e, R, e, R, 0, R, R, 0, L, L']],
+                    [JSON.stringify(['o', '1']), ['o', 'R, x, L, L, L']],
+                    [JSON.stringify(['o', '0']), ['q', '']],
+                    [JSON.stringify(['q', '0']), ['q', 'R, R']],
+                    [JSON.stringify(['q', '1']), ['q', 'R, R']],
+                    [JSON.stringify(['q', '']), ['p', '1, L']],
+                    [JSON.stringify(['p', 'x']), ['q', 'E, R']],
+                    [JSON.stringify(['p', 'e']), ['f', 'R']],
+                    [JSON.stringify(['p', '']), ['p', 'L, L']],
+                    [JSON.stringify(['f', '1']), ['f', 'R, R']],
+                    [JSON.stringify(['f', '0']), ['f', 'R, R']],
+                    [JSON.stringify(['f', '']), ['o', '0, L, L']],
+                ])
                 setTable(transitionTable)
                 break
             case '2':
@@ -99,8 +121,8 @@ for (let i = 0; i < sets.length; i++) {
                 ])
                 setTable(transitionTable)
                 break
-        }
-        outer.style.display = "grid"
+            }
+            outer.style.display = "grid"
         input.style.display = "none"
         edit.style.display = "block"
         tran = setTimeout(transition, delay)
@@ -125,6 +147,12 @@ document.getElementById("showInput").addEventListener('click', (e) => {
     outer.style.display = "none"
     input.style.display = "block"
     edit.style.display = "none"
+})
+
+document.getElementById("expand").addEventListener('click', e => {
+    e.preventDefault()
+    e.stopImmediatePropagation()
+    setTable(transitionTable)
 })
 
 document.getElementById('encode').addEventListener('click', (e) => {
